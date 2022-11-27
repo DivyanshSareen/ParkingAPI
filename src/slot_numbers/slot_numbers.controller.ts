@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
+import { SlotNumbersService } from './slot_numbers.service';
+import { ParkService } from 'src/park/park.service';
+@Controller('slot_numbers')
+export class SlotNumbersController {
+    constructor(private slotNumberService: SlotNumbersService, private parkService: ParkService) { }
 
-@Controller('slot-numbers')
-export class SlotNumbersController {}
+    @Get(':color')
+    findAll(@Param('color') color) {
+        return this.slotNumberService.findAll(this.parkService.getStatus(), color)
+    }
+}
