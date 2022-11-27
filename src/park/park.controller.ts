@@ -10,7 +10,6 @@ export class ParkController {
 
     @Post()
     allocate(@Body() allocateParking: AllocateParking): Park | ServerMessage {
-        console.log(allocateParking)
         const { registration_no, color } = allocateParking;
         const { total_slot } = this.parkingLotService.getTotalSlot();
         return this.parkService.allocate(total_slot, registration_no, color);

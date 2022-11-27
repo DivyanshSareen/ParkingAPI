@@ -8,21 +8,20 @@ export class ParkService {
     private occupied_slots: Park[] = [];
     private clear_slots: ClearSlot[] = [];
 
-    initialise(): Park {
-        return {
-            "slot_no": 12,
-            "registration_no": "KA-01-HH-1235",
-            "color": "black"
+    initialise(increment_value, total_slot) {
+        for (let i = 1; i <= increment_value; i++) {
+            this.clear_slots.push({ slot_no: i + total_slot });
         }
     }
     allocate(total_slot, registration_no, color): Park | ServerMessage {
         if (this.clear_slots.length <= 0) {
             return { message: "The parking lot is full! Please come again later." };
         }
-        return {
-            "slot_no": total_slot,
-            "registration_no": registration_no,
-            "color": color
+        else {
+            let { slot_no } = this.clear_slots.shift();
+            let new_slot: Park = { slot_no, registration_no, color };
+            this.occupied_slots.push(new_slot);
+            return new_slot;
         }
     }
 }
