@@ -3,7 +3,7 @@ import { AllocateParking } from './dto/allocate-parking.dto';
 import { ParkService } from './park.service';
 import { Park } from './interface/park.interface';
 import { ParkingLotService } from '../parking_lot/parking_lot.service';
-import { ServerMessage } from './interface/server_message.interface';
+import { ServerMessage } from '../interface/server_message.interface';
 @Controller('park')
 export class ParkController {
     constructor(private parkingLotService: ParkingLotService, private parkService: ParkService) { }

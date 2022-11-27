@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ClearSlot } from './interface/clear_slot.interface';
 import { Park } from './interface/park.interface';
-import { ServerMessage } from './interface/server_message.interface';
+import { ServerMessage } from '../interface/server_message.interface';
+import { FreedSlot } from 'src/clear/interface/freed-slot.interface';
 
 @Injectable()
 export class ParkService {
@@ -27,7 +28,7 @@ export class ParkService {
     getStatus(): Park[] {
         return this.occupied_slots;
     }
-    clearSlot(slot_no, total_slot) {
+    clearSlot(slot_no: number, total_slot: number): FreedSlot | ServerMessage {
         if (slot_no > total_slot) {
             return { message: "The requested slot number does not exist" };
         }
@@ -36,7 +37,7 @@ export class ParkService {
             return { message: "The requested slot is already empty" };
         }
         else {
-            const slotDetails = this.occupied_slots[slotIndex];
+            const slotDetails: Park = this.occupied_slots[slotIndex];
             this.clear_slots.push({ slot_no: slotDetails.slot_no });
             this.occupied_slots.splice(slotIndex, 1);
             return { freed_slot_no: slotDetails.slot_no };

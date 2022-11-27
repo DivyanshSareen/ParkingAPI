@@ -6,7 +6,7 @@ export class RegistrationNumberController {
     constructor(private registrationNumberService: RegistrationNumberService, private parkService: ParkService) { }
 
     @Get(':color')
-    findAll(@Param('color') color) {
+    findAll(@Param('color') color: string): string[] {
         return this.registrationNumberService.findAll(this.parkService.getStatus(), color)
     }
 }
