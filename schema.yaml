@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Parking API
+  description: An automated ticketing system needs to be built that allows the customers to use the parking lot without any human intervention.
+  version: 1.0.0
+
+servers:
+  - url: http://api.example.com/v1
+    description: Optional server description, e.g. Main (production) server
+  - url: http://staging-api.example.com
+    description: Optional server description, e.g. Internal staging server for testing
+    
+paths:
+  /parking_lot:
+    post:
+      summary: This will set up a new Parking lot.
+      description:  This API needs to be called on initialising the system.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                no_of_slot:
+                  type: integer
+                  minimum: 1
+                  example: 15
+      responses:
+        '200':    
+          description: N number of slots are allocated to parking space.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  total_slot:
+                    type: integer
+                    example: 15
+        '400':
+          description: Bad request! please check the request body.
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                    example: "bad request"
+    patch:
+      summary: Add new slots to existing system.
+      description: This method will add N new slots to the existing parking slots.
+      requestBody:
+        required: true
+        content: 
+          application/json:
+            schema:
+              type: object
+              properties:
+                increment_slot:
+                  type: integer
+                  example: 5
+      responses:
+        '200':    # status code
+          description: No. of slots incremented 
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  total_slot: 
+                    type: integer
+                    minimum: 1                    
+                    example: 20
+  /park:
+    post:
+      summary: This will allocate a parking slot to a car.
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vehicle'
+      responses:
+        '200':
+          description: The slot was allocated to the vehicle
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/parking_slot'
+        '409':
+          description: Conflict! parking lot is full
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties: 
+                  message: 
+                    type: string
+                    example: "The parking lot is full. Please come later" 
+  /registration_numbers/{color}:
+    get:
+      summary: Returns list of vehicle registration numebers based on given color
+      parameters:
+        - in: path
+          name: color
+          schema:
+            type: string
+          example: black
+          required: true
+          description: The color of vehicles to be returned.
+      responses:
+        '200':
+          description: List of registration number of vehicles of given color.
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "KA-01-HH-1235"
+  /slot_numbers/{color}:
+    get:
+      summary: Returns list of vehicle slot numbers based on given color
+      parameters:
+       - in: path
+         name: color
+         schema:
+          type: string
+         example: black
+         required: true
+         description: The color of vehicle to be returned
+      responses:
+        '200':
+          description: List of slot numbers with given colored vehicle.
+          content:
+            application/json:
+              schema: 
+                type: array
+                items:
+                  type: string
+                  example: "12"
+  /clear:
+    post:
+      summary: Clear a parking slot based on slot number.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - type: object
+                  properties:
+                    slot_no:
+                      type: number
+                      example: 10
+                - type: object
+                  properties:
+                    car_registration_no:
+                      type: number
+                      example: "KA-01-AB-2211"      
+      responses:
+        '200':
+          description: Found and cleared the parking slot at given slot number
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  freed_slot_no: 
+                    type: number
+                    example: 10
+        '400':
+          description: The slot is already free
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "The requested slot is already empty"
+        '404':
+          description: The requested slot number does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: 
+                    type: string
+                    example: "The requested slot number does not exist"
+  /status:
+    get:
+      summary: This will fetch all the occupied slots in the parking lot.
+      responses:
+        '200':
+          description: Returns a list occupied parking slots.
+          content: 
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/parking_slot'
+              
+components:
+  schemas:
+    parking_slot:
+      type: object
+      properties:
+        slot_no: 
+          description: "Each slot is denoted by an integer starting from 1 to n"
+          type: integer
+          example: 12
+        registration_no:
+          type: string
+          example: "KA-01-HH-1235"
+        color: 
+          type: string
+          example: "black"        
+    vehicle:
+      type: object
+      properties:
+        registration_no:
+          type: string
+          example: "KA-01-HH-1234"
+        color: 
+          type: string
+          example: "blue"
+      
