@@ -7,4 +7,4 @@ import { ParkingLotService } from './parking_lot.service';
     controllers: [ParkingLotController],
     providers: [ParkingLotService],
 })
-export class AppModule { }
+export class ParkingLotModule { }
