@@ -9,10 +9,12 @@ import { ClearController } from './clear/clear.controller';
 import { StatusController } from './status/status.controller';
 import { ParkingLotService } from './parking_lot/parking_lot.service';
 import { ParkService } from './park/park.service';
+import { RegistrationNumberService } from './registration_number/registration_number.service';
+import { SlotNumbersService } from './slot_numbers/slot_numbers.service';
 
 @Module({
   imports: [],
   controllers: [AppController, ParkingLotController, ParkController, RegistrationNumberController, SlotNumbersController, ClearController, StatusController],
-  providers: [AppService, ParkingLotService, ParkService],
+  providers: [AppService, ParkingLotService, ParkService, RegistrationNumberService, SlotNumbersService],
 })
 export class AppModule {}

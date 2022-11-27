@@ -24,4 +24,7 @@ export class ParkService {
             return new_slot;
         }
     }
+    getStatus(): Park[] {
+        return this.occupied_slots;
+    }
 }
