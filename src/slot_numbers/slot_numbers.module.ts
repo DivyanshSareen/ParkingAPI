@@ -8,4 +8,4 @@ import { SlotNumbersService } from './slot_numbers.service';
     controllers: [SlotNumbersController],
     providers: [ParkService, SlotNumbersService],
 })
-export class RegistrationNumberModule { }
+export class SlotNumberModule { }

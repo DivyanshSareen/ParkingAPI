@@ -27,4 +27,19 @@ export class ParkService {
     getStatus(): Park[] {
         return this.occupied_slots;
     }
+    clearSlot(slot_no, total_slot) {
+        if (slot_no > total_slot) {
+            return { message: "The requested slot number does not exist" };
+        }
+        const slotIndex = this.occupied_slots.findIndex(slot => slot.slot_no === slot_no);
+        if (slotIndex === -1) {
+            return { message: "The requested slot is already empty" };
+        }
+        else {
+            const slotDetails = this.occupied_slots[slotIndex];
+            this.clear_slots.push({ slot_no: slotDetails.slot_no });
+            this.occupied_slots.splice(slotIndex, 1);
+            return { freed_slot_no: slotDetails.slot_no };
+        }
+    }
 }
