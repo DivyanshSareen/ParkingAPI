@@ -3,11 +3,16 @@ import { ClearSlot } from './interface/clear_slot.interface';
 import { Park } from './interface/park.interface';
 import { ServerMessage } from '../interface/server_message.interface';
 import { FreedSlot } from 'src/clear/interface/freed-slot.interface';
+import { PriorityQueue, ICompare } from '@datastructures-js/priority-queue';
 
 @Injectable()
 export class ParkService {
+
+    private compareSlots: ICompare<ClearSlot> = (a: ClearSlot, b: ClearSlot) => {
+        return a.slot_no - b.slot_no;
+    };
+    private clear_slots = new PriorityQueue<ClearSlot>(this.compareSlots);
     private occupied_slots: Park[] = [];
-    private clear_slots: ClearSlot[] = [];
 
     initialise(increment_value, total_slot) {
         for (let i = 1; i <= increment_value; i++) {
@@ -15,11 +20,11 @@ export class ParkService {
         }
     }
     allocate(total_slot, registration_no, color): Park | ServerMessage {
-        if (this.clear_slots.length <= 0) {
+        if (this.clear_slots.size() <= 0) {
             return { message: "The parking lot is full! Please come again later." };
         }
         else {
-            let { slot_no } = this.clear_slots.shift();
+            let { slot_no } = this.clear_slots.dequeue();
             let new_slot: Park = { slot_no, registration_no, color };
             this.occupied_slots.push(new_slot);
             return new_slot;
